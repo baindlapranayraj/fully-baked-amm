@@ -201,7 +201,7 @@ describe("fully-backed-amm", () => {
 
       console.log(`✅✅✅ Yey setup has done ${trx.toString()} ✅✅✅`);
     } catch (e) {
-      console.log(`Error Occured while testing initialize test-case ${e}`);
+      throw new Error(`Error Occured while testing initialize test-case ${e}`);
     }
   });
 });

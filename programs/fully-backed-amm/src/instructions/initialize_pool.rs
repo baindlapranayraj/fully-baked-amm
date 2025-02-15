@@ -25,17 +25,17 @@ pub struct InitializePool<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
-    pub mint_a: Box<InterfaceAccount<'info, Mint>>,
-    pub mint_b: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_a: InterfaceAccount<'info, Mint>,
+    pub mint_b: InterfaceAccount<'info, Mint>,
 
     #[account(
         init,
         payer = admin,
-        space = 8 + PoolConfig::INIT_SPACE,
+        space = 8 + PoolConfig::INIT_SPACE ,
         seeds = [POOL,seed.to_le_bytes().as_ref()],
         bump
     )]
-    pub pool_config_account: Box<Account<'info, PoolConfig>>,
+    pub pool_config_account: Account<'info, PoolConfig>,
 
     #[account(
         init,
@@ -45,7 +45,7 @@ pub struct InitializePool<'info> {
         mint::authority = pool_config_account,
         mint::decimals = 6,
     )]
-    pub mint_lp: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_lp: InterfaceAccount<'info, Mint>,
 
     // Vault Accounts
     #[account(
@@ -55,7 +55,7 @@ pub struct InitializePool<'info> {
         associated_token::authority = pool_config_account,
         associated_token::token_program  = associated_token_program,
     )]
-    pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub vault_a: InterfaceAccount<'info, TokenAccount>,
 
     #[account(
         init,
@@ -64,7 +64,7 @@ pub struct InitializePool<'info> {
         associated_token::authority = pool_config_account,
         associated_token::token_program  = associated_token_program,
     )]
-    pub vault_b: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub vault_b: InterfaceAccount<'info, TokenAccount>,
 
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>,
