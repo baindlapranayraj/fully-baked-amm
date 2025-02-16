@@ -130,9 +130,9 @@ impl<'info> DepositAsset<'info> {
         };
 
         let accounts = TransferChecked {
-            from: from,
+            from,
             mint: mint.to_account_info(),
-            to: to,
+            to,
             authority: self.liquid_provider.to_account_info(),
         };
 
@@ -141,6 +141,7 @@ impl<'info> DepositAsset<'info> {
         transfer_checked(ctx, amount, mint.decimals)?;
         Ok(())
     }
+
     fn mint_token(&mut self, amount: u64) -> Result<()> {
         let accounts = MintTo {
             mint: self.mint_lp.to_account_info(),

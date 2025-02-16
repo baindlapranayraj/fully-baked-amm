@@ -5,11 +5,13 @@ import {
   createMint,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
-  mintTo,
+  getMint,
   mintToChecked,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
+import { randomBytes } from "crypto";
+import { BN } from "bn.js";
 
 const airdropSOL = async (
   to: anchor.web3.PublicKey,
@@ -29,25 +31,6 @@ const airdropSOL = async (
 };
 
 const createMintAccount = async (
-  provider: anchor.AnchorProvider,
-  payer: anchor.web3.Keypair
-) => {
-  try {
-    const mint = await createMint(
-      provider.connection,
-      payer,
-      payer.publicKey,
-      payer.publicKey,
-      6
-    );
-
-    return mint;
-  } catch (e) {
-    console.log(`Error while trying to create Mint Account ${e}`);
-  }
-};
-
-const createMintLPAccount = async (
   provider: anchor.AnchorProvider,
   payer: anchor.web3.Keypair
 ) => {
@@ -124,7 +107,7 @@ describe("fully-backed-amm", () => {
 
   let admin: anchor.web3.Keypair;
   let lqProvider: anchor.web3.Keypair;
-  let secretSeed = new anchor.BN(10);
+  let secretSeed = new BN(randomBytes(8));
 
   let mintA: anchor.web3.PublicKey; // bonk
   let mintB: anchor.web3.PublicKey; // popcat
@@ -170,6 +153,9 @@ describe("fully-backed-amm", () => {
         [Buffer.from("mint_lp"), poolConfigPDA.toBuffer()],
         program.programId
       )[0];
+
+      console.log(` 🦄🦄🦄 The mintLP in test-side is ${mintLP.toString()} 🦄🦄`)
+
     } catch (e) {
       console.log(`Error occured while setting up test-cases ${e}`);
     }
@@ -205,3 +191,5 @@ describe("fully-backed-amm", () => {
     }
   });
 });
+
+

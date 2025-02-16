@@ -44,6 +44,7 @@ pub struct InitializePool<'info> {
         bump,
         mint::authority = pool_config_account,
         mint::decimals = 6,
+        mint::token_program = token_program
     )]
     pub mint_lp: InterfaceAccount<'info, Mint>,
 
@@ -84,6 +85,8 @@ impl<'info> InitializePool<'info> {
             pool_bump: bumps.pool_config_account,
         });
 
-        Ok(())
+        msg!("The address for mint_lp is {:?}", self.mint_lp.key());
+
+    Ok(())
     }
 }

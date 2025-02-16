@@ -26,11 +26,11 @@ pub mod fully_backed_amm {
         Ok(())
     }
 
-    // pub fn swap(ctx: Context<InitializePool>, seed: u8) -> Result<()> {
-    //     msg!("Greetings from: {:?}", ctx.program_id);
-    //     ctx.accounts.init_pool(ctx.bumps, seed)?;
-    //     Ok(())
-    // }
+    pub fn swap(ctx: Context<Swap>,  is_a: bool, amount: u64) -> Result<()> {
+        msg!("Greetings from: {:?}", ctx.program_id);
+        ctx.accounts.swap(is_a,amount)?;
+        Ok(())
+    }
 
     // pub fn withdraw_asset(ctx: Context<InitializePool>, seed: u8) -> Result<()> {
     //     msg!("Greetings from: {:?}", ctx.program_id);
