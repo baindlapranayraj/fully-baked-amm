@@ -183,7 +183,7 @@ describe("fully-backed-amm", () => {
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         })
         .signers([admin])
-        .rpc();
+        .rpc({skipPreflight:true});
 
       console.log(`✅✅✅ Yey setup has done ${trx.toString()} ✅✅✅`);
     } catch (e) {

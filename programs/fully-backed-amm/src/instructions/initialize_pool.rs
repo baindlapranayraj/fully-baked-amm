@@ -1,6 +1,6 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::system_program};
 use anchor_spl::{
-    associated_token::AssociatedToken,
+    associated_token::{self, AssociatedToken},
     token_interface::{Mint, TokenAccount, TokenInterface},
 };
 
@@ -25,8 +25,8 @@ pub struct InitializePool<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
-    pub mint_a: InterfaceAccount<'info, Mint>,
-    pub mint_b: InterfaceAccount<'info, Mint>,
+    pub mint_a: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_b: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         init,
@@ -35,7 +35,7 @@ pub struct InitializePool<'info> {
         seeds = [POOL,seed.to_le_bytes().as_ref()],
         bump
     )]
-    pub pool_config_account: Account<'info, PoolConfig>,
+    pub pool_config_account: Box<Account<'info, PoolConfig>>,
 
     #[account(
         init,
@@ -46,7 +46,7 @@ pub struct InitializePool<'info> {
         mint::decimals = 6,
         mint::token_program = token_program
     )]
-    pub mint_lp: InterfaceAccount<'info, Mint>,
+    pub mint_lp: Box<InterfaceAccount<'info, Mint>>,
 
     // Vault Accounts
     #[account(
@@ -56,7 +56,7 @@ pub struct InitializePool<'info> {
         associated_token::authority = pool_config_account,
         associated_token::token_program  = associated_token_program,
     )]
-    pub vault_a: InterfaceAccount<'info, TokenAccount>,
+    pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
 
     #[account(
         init,
@@ -65,16 +65,24 @@ pub struct InitializePool<'info> {
         associated_token::authority = pool_config_account,
         associated_token::token_program  = associated_token_program,
     )]
-    pub vault_b: InterfaceAccount<'info, TokenAccount>,
+    pub vault_b: Box<InterfaceAccount<'info, TokenAccount>>,
 
+    #[account(
+        address = system_program::ID
+    )]
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>,
+
+    #[account(
+        address = associated_token::ID
+    )]
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 impl<'info> InitializePool<'info> {
     pub fn init_pool(&mut self, bumps: InitializePoolBumps, seeds: u64) -> Result<()> {
         // Saving the pool config data
+
 
         self.pool_config_account.set_inner(PoolConfig {
             owner: Some(self.admin.key()),
