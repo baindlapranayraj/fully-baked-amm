@@ -25,17 +25,17 @@ pub struct InitializePool<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
-    pub mint_a: Box<InterfaceAccount<'info, Mint>>,
-    pub mint_b: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_a: InterfaceAccount<'info, Mint>,
+    pub mint_b: InterfaceAccount<'info, Mint>,
 
     #[account(
         init,
         payer = admin,
         space = 8 + PoolConfig::INIT_SPACE ,
-        seeds = [POOL,seed.to_le_bytes().as_ref()],
+        seeds = [POOL, seed.to_le_bytes().as_ref()],
         bump
     )]
-    pub pool_config_account: Box<Account<'info, PoolConfig>>,
+    pub pool_config_account: Account<'info, PoolConfig>,
 
     #[account(
         init,
@@ -46,26 +46,26 @@ pub struct InitializePool<'info> {
         mint::decimals = 6,
         mint::token_program = token_program
     )]
-    pub mint_lp: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_lp: InterfaceAccount<'info, Mint>,
 
     // Vault Accounts
-    #[account(
-        init,
-        payer = admin,
-        associated_token::mint = mint_a,
-        associated_token::authority = pool_config_account,
-        associated_token::token_program  = associated_token_program,
-    )]
-    pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
+    // #[account(
+    //     init,
+    //     payer = admin,
+    //     associated_token::mint = mint_a,
+    //     associated_token::authority = pool_config_account,
+    //     associated_token::token_program  = associated_token_program,
+    // )]
+    // pub vault_a: InterfaceAccount<'info, TokenAccount>,
 
-    #[account(
-        init,
-        payer = admin,
-        associated_token::mint = mint_b,
-        associated_token::authority = pool_config_account,
-        associated_token::token_program  = associated_token_program,
-    )]
-    pub vault_b: Box<InterfaceAccount<'info, TokenAccount>>,
+    // #[account(
+    //     init,
+    //     payer = admin,
+    //     associated_token::mint = mint_b,
+    //     associated_token::authority = pool_config_account,
+    //     associated_token::token_program  = associated_token_program,
+    // )]
+    // pub vault_b: InterfaceAccount<'info, TokenAccount>,
 
     #[account(
         address = system_program::ID
@@ -95,6 +95,6 @@ impl<'info> InitializePool<'info> {
 
         msg!("The address for mint_lp is {:?}", self.mint_lp.key());
 
-    Ok(())
+        Ok(())
     }
 }
