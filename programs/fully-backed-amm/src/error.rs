@@ -7,4 +7,10 @@ pub enum AMMError {
 
     #[msg("The asset ratio is not valid ")]
     NotValidAsset,
+
+    #[msg("The amount in vault or in mint supply is zero")]
+    AmountZero,
+
+    #[msg("Overflow Occured")]
+    Overflow
 }

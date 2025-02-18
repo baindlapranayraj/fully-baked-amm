@@ -51,9 +51,8 @@ pub struct Withdraw<'info> {
     #[account(
         mut,
         seeds = [MINT_LP, pool_config_account.key().to_bytes().as_ref()],
-        bump,
+        bump = pool_config_account.pool_mint_bump,
         mint::authority = pool_config_account,
-        mint::decimals = 6,
         mint::token_program = token_program
     )]
     pub mint_lp: InterfaceAccount<'info, Mint>,
