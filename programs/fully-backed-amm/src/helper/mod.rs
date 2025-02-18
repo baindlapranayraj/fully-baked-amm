@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use std::{error::Error, ops::Mul};
 
 use crate::error::AMMError;
 
@@ -73,11 +72,13 @@ macro_rules! withdraw_token {
 
 pub fn calculate_liquidity(amount_x: u64, amount_y: u64) -> Result<u64> {
     // K = sqr(XY);
+    // lets say X = 1000 and Y = 1000
+    // K = 1000
     check_zero!([amount_x, amount_y]);
-    let liquidity = amount_x
+    let liquidity = (amount_x
         .checked_mul(amount_y)
-        .ok_or(AMMError::Overflow)?;
-    Ok(liquidity)
+        .ok_or(AMMError::Overflow)? as f64).sqrt();
+    Ok(liquidity.round() as u64)
 }
 
 pub fn calculate_lp_token(

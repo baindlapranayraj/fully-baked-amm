@@ -41,7 +41,7 @@ pub mod fully_backed_amm {
 
 // ++++++++++++++ AMM Workflow ++++++++++++++
 // - Initialize the AMM Pool
-// - Deposite assets into the AMM Pool(For first time no need to share LP tokens)
+// - Deposite assets into the AMM Pool(For first time calculate Liquidity k = Sqaure Root of XY)
 // - Swap tokens
 // - Withdraw assets from the AMM Pool.
 
@@ -49,4 +49,5 @@ pub mod fully_backed_amm {
 //+++++++++ Todos +++++++++
 // - mantain accuracy of numbers while swaping
 // - build in such way it shows the pale immitation of uniswap or raydiuim
+
 

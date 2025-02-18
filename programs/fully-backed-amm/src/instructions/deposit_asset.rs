@@ -7,7 +7,7 @@ use anchor_spl::{
 };
 
 use crate::{
-    calculate_lp_tokens, check_asset, constant::{MINT_LP, POOL}, error::AMMError, helper::{calculate_liquidity, calculate_lp_token}, state::PoolConfig
+     check_asset, constant::{MINT_LP, POOL}, error::AMMError, helper::{calculate_liquidity, calculate_lp_token}, state::PoolConfig
 };
 
 // +++++ Accounts +++++
@@ -93,7 +93,7 @@ impl<'info> DepositAsset<'info> {
             true => {
                 self.deposite_token(true, amount_a)?;
                 self.deposite_token(false, amount_b)?;
-                let lq_amount = calculate_liquidity(amount_a, amount_b)?;
+                let lq_amount = calculate_liquidity(amount_a, amount_b)?; // 1000
                 self.mint_token(lq_amount)?;
             }
             false => {
