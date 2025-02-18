@@ -141,7 +141,7 @@ impl<'info> Swap<'info> {
             from,
             mint: mint.to_account_info(),
             to,
-            authority: self.user.to_account_info(),
+            authority: self.pool_config_account.to_account_info(),
         };
 
         let secret_seed = self.pool_config_account.seed.to_le_bytes();

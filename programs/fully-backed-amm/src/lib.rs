@@ -44,3 +44,9 @@ pub mod fully_backed_amm {
 // - Deposite assets into the AMM Pool(For first time no need to share LP tokens)
 // - Swap tokens
 // - Withdraw assets from the AMM Pool.
+
+
+//+++++++++ Todos +++++++++
+// - mantain accuracy of numbers while swaping
+// - build in such way it shows the pale immitation of uniswap or raydiuim
+

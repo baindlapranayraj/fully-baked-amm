@@ -92,7 +92,7 @@ pub struct DepositAsset<'info> {
 
 impl<'info> DepositAsset<'info> {
     pub fn deposite(&mut self, amount_a: u64, amount_b: u64) -> Result<()> {
-        match self.mint_lp.supply == 0 {
+        match self.mint_lp.supply == 0 && self.vault_a.amount == 0 && self.vault_b.amount == 0 {
             true => {
                 self.deposite_token(true, amount_a)?;
                 self.deposite_token(false, amount_b)?;

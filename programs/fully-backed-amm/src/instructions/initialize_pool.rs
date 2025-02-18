@@ -1,24 +1,10 @@
-use anchor_lang::{prelude::*, solana_program::system_program};
+use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::{self, AssociatedToken},
-    token_interface::{Mint, TokenAccount, TokenInterface},
+    token_interface::{Mint, TokenInterface},
 };
 
 use crate::{constant::*, state::PoolConfig};
-
-// ++++++ Accounts ++++++
-// - admin
-// - vault_a
-// - vault_b
-// - mint_a
-// - mint_b
-// - mint_lp
-// - pool_config
-
-// Lets say
-// - mint_a = BONK
-// - mint_b = POPCAT
-
 #[derive(Accounts)]
 #[instruction(seed: u64)]
 pub struct InitializePool<'info> {
@@ -49,52 +35,82 @@ pub struct InitializePool<'info> {
     pub mint_lp: Box<InterfaceAccount<'info, Mint>>,
 
     // Vault Accounts
+    /// CHECK: Verified in CPI
     #[account(
-        init,
-        payer = admin,
-        associated_token::mint = mint_a,
-        associated_token::authority = pool_config_account,
-        associated_token::token_program  = associated_token_program,
+        mut,
+        seeds = [
+            pool_config_account.key().as_ref(), // Owner
+            token_program.key().as_ref(),       // token_program_id
+            mint_a.key().as_ref(),              // mint_account_id
+        ],
+        seeds::program = associated_token::ID,
+        bump
     )]
-    pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub vault_a: UncheckedAccount<'info>,
 
+    /// CHECK: Verified in CPI
     #[account(
-        init,
-        payer = admin,
-        associated_token::mint = mint_b,
-        associated_token::authority = pool_config_account,
-        associated_token::token_program  = associated_token_program,
+        mut,
+        seeds = [
+            pool_config_account.key().as_ref(),
+            token_program.key().as_ref(),
+            mint_b.key().as_ref(),
+        ],
+        seeds::program = associated_token::ID,
+        bump
     )]
-    pub vault_b: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub vault_b: UncheckedAccount<'info>,
 
-    #[account(
-        address = system_program::ID
-    )]
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>,
-
-    #[account(
-        address = associated_token::ID
-    )]
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 impl<'info> InitializePool<'info> {
     pub fn init_pool(&mut self, bumps: InitializePoolBumps, seeds: u64) -> Result<()> {
+        // create ATAs
+        let ctx_a_accounts = associated_token::Create {
+            payer: self.admin.to_account_info(),
+            associated_token: self.vault_a.to_account_info(),
+            authority: self.pool_config_account.to_account_info(),
+            mint: self.mint_a.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+            token_program: self.token_program.to_account_info(),
+        };
+
+        associated_token::create_idempotent(CpiContext::new(
+            self.associated_token_program.to_account_info(),
+            ctx_a_accounts,
+        ))?;
+
+        let ctx_b_accounts = associated_token::Create {
+            payer: self.admin.to_account_info(),
+            associated_token: self.vault_b.to_account_info(),
+            authority: self.pool_config_account.to_account_info(),
+            mint: self.mint_b.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+            token_program: self.token_program.to_account_info(),
+        };
+        associated_token::create_idempotent(CpiContext::new(
+            self.associated_token_program.to_account_info(),
+            ctx_b_accounts,
+        ))?;
+
         // Saving the pool config data
-
-
         self.pool_config_account.set_inner(PoolConfig {
             owner: Some(self.admin.key()),
+
             mint_a: self.mint_a.key(),
             mint_b: self.mint_b.key(),
+            
             seed: seeds,
             pool_mint_bump: bumps.mint_lp,
             pool_bump: bumps.pool_config_account,
+            
+            vault_a_bump:bumps.vault_a,
+            vault_b_bump:bumps.vault_b
         });
 
-        msg!("The address for mint_lp is {:?}", self.mint_lp.key());
-
-    Ok(())
+        Ok(())
     }
 }
