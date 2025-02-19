@@ -68,7 +68,7 @@ pub struct InitializePool<'info> {
 
 impl<'info> InitializePool<'info> {
     pub fn init_pool(&mut self, bumps: InitializePoolBumps, seeds: u64) -> Result<()> {
-        // create ATAs
+        // create Vault ATAs through CPI
         let ctx_a_accounts = associated_token::Create {
             payer: self.admin.to_account_info(),
             associated_token: self.vault_a.to_account_info(),

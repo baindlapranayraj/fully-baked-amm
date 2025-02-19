@@ -4,15 +4,7 @@ use anchor_spl::{
     token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked},
 };
 
-use crate::{constant::POOL, state::PoolConfig, swaping_a_for_b, swaping_b_for_a};
-
-// +++++++ Accounts +++++++
-// - user
-// - vault_a
-// - vault_b
-// - user_token_a
-// - user_token_b
-// - pool_config_pda
+use crate::{constant::POOL, helper::SwapToken, state::PoolConfig};
 
 #[derive(Accounts)]
 pub struct Swap<'info> {
@@ -28,6 +20,7 @@ pub struct Swap<'info> {
         associated_token::authority = user
     )]
     pub user_token_a: InterfaceAccount<'info, TokenAccount>,
+
     #[account(
         mut,
         associated_token::mint = mint_b,
@@ -36,12 +29,12 @@ pub struct Swap<'info> {
     pub user_token_b: InterfaceAccount<'info, TokenAccount>,
 
     #[account(
-            mut,
-            seeds = [POOL,pool_config_account.seed.to_le_bytes().as_ref()],
-            bump = pool_config_account.pool_bump,
-            has_one = mint_a.key(),
-            has_one = mint_b.key(),
-        )]
+        mut,
+        seeds = [POOL, pool_config_account.seed.to_le_bytes().as_ref()],
+        bump = pool_config_account.pool_bump,
+        has_one = mint_a.key(),
+        has_one = mint_b.key(),
+    )]
     pub pool_config_account: Box<Account<'info, PoolConfig>>,
 
     #[account(
@@ -50,6 +43,7 @@ pub struct Swap<'info> {
         associated_token::authority = pool_config_account,
     )]
     pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
+
     #[account(
         mut,
         associated_token::mint = mint_b,
@@ -64,16 +58,12 @@ pub struct Swap<'info> {
 
 impl<'info> Swap<'info> {
     pub fn swap(&mut self, is_a: bool, amount: u64) -> Result<()> {
-        let send_amount = match is_a {
-            true => {
-                let a = swaping_a_for_b!(self, amount);
-                a as u64
-            }
-            false => {
-                let a = swaping_b_for_a!(self, amount);
-                a as u64
-            }
-        };
+        let send_amount = SwapToken::swap_token(SwapToken {
+            is_a,
+            deposit_amount: amount,
+            total_amount_a: self.vault_a.amount,
+            total_amount_b: self.vault_b.amount,
+        })?;
 
         self.deposit_tokens(is_a, amount)?;
         self.transfer_user(is_a, send_amount)?;
@@ -82,9 +72,7 @@ impl<'info> Swap<'info> {
     }
 
     fn deposit_tokens(&mut self, is_a: bool, amount: u64) -> Result<()> {
-        // from user to vault(it can be token a or b)
         let mint: InterfaceAccount<'info, Mint>;
-
         let (from, to) = match is_a {
             true => {
                 mint = self.mint_a.clone();
@@ -110,16 +98,12 @@ impl<'info> Swap<'info> {
         };
 
         let ctx = CpiContext::new(self.token_program.to_account_info(), accounts);
-
         transfer_checked(ctx, amount, mint.decimals)?;
         Ok(())
     }
 
     fn transfer_user(&mut self, is_a: bool, amount: u64) -> Result<()> {
-        // from vault to user
-
         let mint: InterfaceAccount<'info, Mint>;
-
         let (from, to) = match is_a {
             true => {
                 mint = self.mint_b.clone();
@@ -150,7 +134,6 @@ impl<'info> Swap<'info> {
             secret_seed.as_ref(),
             &[self.pool_config_account.pool_bump],
         ];
-
         let signer_seeds = &[&seeds[..]];
 
         let ctx = CpiContext::new_with_signer(
@@ -158,12 +141,7 @@ impl<'info> Swap<'info> {
             accounts,
             signer_seeds,
         );
-
         transfer_checked(ctx, amount, mint.decimals)?;
         Ok(())
     }
 }
-
-// the flow
-// - calculate the sending amount of token
-// - deposite the user token to vault and transfer the token from vault to user

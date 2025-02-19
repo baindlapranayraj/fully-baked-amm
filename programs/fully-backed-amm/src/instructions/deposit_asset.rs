@@ -7,19 +7,10 @@ use anchor_spl::{
 };
 
 use crate::{
-     check_asset, constant::{MINT_LP, POOL}, error::AMMError, helper::{calculate_liquidity, calculate_lp_token}, state::PoolConfig
+    constant::{MINT_LP, POOL},
+    helper::LiquidityPool,
+    state::PoolConfig,
 };
-
-// +++++ Accounts +++++
-// - liquid_provider
-// - pool_config_account
-// - lp_token_a
-// - lp_token_b
-// - vault_a
-// - vault_b
-// - mint_lp
-// - liquid_provider_lp_token
-//
 
 #[derive(Accounts)]
 pub struct DepositAsset<'info> {
@@ -53,7 +44,7 @@ pub struct DepositAsset<'info> {
 
     #[account(
         mut,
-        seeds = [POOL,pool_config_account.seed.to_le_bytes().as_ref()],
+        seeds = [POOL, pool_config_account.seed.to_le_bytes().as_ref()],
         bump = pool_config_account.pool_bump,
         has_one = mint_a.key(),
         has_one = mint_b.key(),
@@ -66,6 +57,7 @@ pub struct DepositAsset<'info> {
         associated_token::authority = pool_config_account,
     )]
     pub vault_a: Box<InterfaceAccount<'info, TokenAccount>>,
+
     #[account(
         mut,
         associated_token::mint = mint_b,
@@ -77,7 +69,7 @@ pub struct DepositAsset<'info> {
         mut,
         mint::authority = pool_config_account,
         mint::decimals = 6,
-        seeds = [MINT_LP,pool_config_account.key().to_bytes().as_ref()],
+        seeds = [MINT_LP, pool_config_account.key().to_bytes().as_ref()],
         bump = pool_config_account.pool_mint_bump
     )]
     pub mint_lp: Box<InterfaceAccount<'info, Mint>>,
@@ -89,22 +81,17 @@ pub struct DepositAsset<'info> {
 
 impl<'info> DepositAsset<'info> {
     pub fn deposite(&mut self, amount_a: u64, amount_b: u64) -> Result<()> {
-        match self.mint_lp.supply == 0 && self.vault_a.amount == 0 && self.vault_b.amount == 0 {
-            true => {
-                self.deposite_token(true, amount_a)?;
-                self.deposite_token(false, amount_b)?;
-                let lq_amount = calculate_liquidity(amount_a, amount_b)?; // 1000
-                self.mint_token(lq_amount)?;
-            }
-            false => {
-                check_asset!(self, amount_a, amount_b);
-                self.deposite_token(true, amount_a)?;
-                self.deposite_token(false, amount_b)?;
-                let lp_share =
-                    calculate_lp_token(self.vault_a.amount, amount_a, self.mint_lp.supply)?;
-                self.mint_token(lp_share)?;
-            }
-        }
+        let lp_token_amount = LiquidityPool::calculate_liquidity(LiquidityPool {
+            total_amount_a: self.vault_a.amount,
+            total_amount_b: self.vault_b.amount,
+            deposit_amount_a: amount_a,
+            deposit_amount_b: amount_b,
+            mint_supply: self.mint_lp.supply,
+        })?;
+        self.deposite_token(true, amount_a)?;
+        self.deposite_token(false, amount_b)?;
+        self.mint_token(lp_token_amount)?;
+
         Ok(())
     }
 
@@ -112,21 +99,18 @@ impl<'info> DepositAsset<'info> {
         let program = self.token_program.to_account_info();
         let mint;
 
-        let (from, to) = match is_a {
-            true => {
-                mint = self.mint_a.clone();
-                (
-                    self.provider_token_a.to_account_info(),
-                    self.vault_a.to_account_info(),
-                )
-            }
-            false => {
-                mint = self.mint_b.clone();
-                (
-                    self.provider_token_b.to_account_info(),
-                    self.vault_b.to_account_info(),
-                )
-            }
+        let (from, to) = if is_a {
+            mint = self.mint_a.clone();
+            (
+                self.provider_token_a.to_account_info(),
+                self.vault_a.to_account_info(),
+            )
+        } else {
+            mint = self.mint_b.clone();
+            (
+                self.provider_token_b.to_account_info(),
+                self.vault_b.to_account_info(),
+            )
         };
 
         let accounts = TransferChecked {
@@ -137,7 +121,6 @@ impl<'info> DepositAsset<'info> {
         };
 
         let ctx = CpiContext::new(program, accounts);
-
         transfer_checked(ctx, amount, mint.decimals)?;
         Ok(())
     }
@@ -150,13 +133,7 @@ impl<'info> DepositAsset<'info> {
         };
 
         let pool_seed = self.pool_config_account.seed.to_le_bytes();
-
-        let seeds = [
-            POOL,
-            pool_seed.as_ref(),
-            &[self.pool_config_account.pool_bump],
-        ];
-
+        let seeds = [POOL, pool_seed.as_ref(), &[self.pool_config_account.pool_bump]];
         let signer_seeds = &[&seeds[..]];
 
         let ctx = CpiContext::new_with_signer(
@@ -164,7 +141,6 @@ impl<'info> DepositAsset<'info> {
             accounts,
             signer_seeds,
         );
-
         mint_to(ctx, amount)?;
         Ok(())
     }
