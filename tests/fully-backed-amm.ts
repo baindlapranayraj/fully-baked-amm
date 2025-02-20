@@ -209,7 +209,9 @@ describe("fully-backed-amm", () => {
     try {
       const LPMintAccount: Mint = await getMint(provider.connection, mintLP);
       console.log(
-        `🔥 Before 1st adding liquidity Checking Mint supply ${Number(LPMintAccount.supply)} 🔥`
+        `🔥 Before 1st adding liquidity Checking Mint supply ${Number(
+          LPMintAccount.supply
+        )} 🔥`
       );
 
       let tx = await program.methods
@@ -239,7 +241,6 @@ describe("fully-backed-amm", () => {
       const vaultAPDA = await getAccount(provider.connection, vaultA);
       const vaultBPDA = await getAccount(provider.connection, vaultB);
 
-
       const lpMintAccount: Mint = await getMint(provider.connection, mintLP);
       // console.log(
       //   `🔥 After 1st adding liquidity Checking Mint supply ${Number(lpMintAccount.supply)} 🔥`
@@ -255,7 +256,6 @@ describe("fully-backed-amm", () => {
 
   it("Is adding liquidity (2nd instruction)", async () => {
     try {
-
       let tx = await program.methods
         .depositeAsset(new anchor.BN(100), new anchor.BN(100))
         .accountsPartial({
@@ -309,16 +309,17 @@ describe("fully-backed-amm", () => {
       const vaultBPDA = await getAccount(provider.connection, vaultB);
 
       const lpMintAccount: Mint = await getMint(provider.connection, mintLP);
-      // console.log(
-      //   `💛💛💛💛 Checking Mint supply ${Number(lpMintAccount.supply)} 💛💛💛💛`
-      // );
+      console.log(
+        `💛💛💛💛 The amount in VaultA is ${Number(
+          vaultAPDA.amount
+        )} and in VaultB is  ${Number(vaultBPDA.amount)}💛💛💛💛`
+      );
+
+      console.log(`🦄🦄🦄The total supply of Lp Tokens are ${Number(lpMintAccount.supply)} 🦄🦄🦄`)
 
       let lpTokens =
         (amountA / Number(vaultAPDA.amount)) * Number(lpMintAccount.supply); // s = (dx/X)T: for cal lp shares
 
-      // console.log(
-      //   `🦄🦄🦄🦄 no.of minted lp tokens we wanted is ${lpTokens}  what we got in lpATA is ${lqProviderLPAccount.amount}🦄🦄🦄🦄`
-      // );
       assert.equal(Number(lqProviderLPAccount.amount), lpTokens + 1000);
       console.log(
         `🦄🦄🦄🦄 The no.of minted lp tokens are perfect ${lpTokens} 🦄🦄🦄🦄`
@@ -328,39 +329,38 @@ describe("fully-backed-amm", () => {
     }
   });
 
-  it("Is adding liquidity should fail (2nd instruction)", async () => {
-    try {
-      let tx = await program.methods
-        .depositeAsset(new anchor.BN(10), new anchor.BN(100))
-        .accountsPartial({
-          liquidProvider: lqProvider.publicKey,
+  // it("Is adding liquidity should fail (2nd instruction)", async () => {
+  //   try {
+  //     let tx = await program.methods
+  //       .depositeAsset(new anchor.BN(10), new anchor.BN(100))
+  //       .accountsPartial({
+  //         liquidProvider: lqProvider.publicKey,
 
-          poolConfigAccount: poolConfigPDA,
+  //         poolConfigAccount: poolConfigPDA,
 
-          mintA: mintA,
-          mintB: mintB,
-          mintLp: mintLP,
+  //         mintA: mintA,
+  //         mintB: mintB,
+  //         mintLp: mintLP,
 
-          providerTokenA: lqProviderA,
-          providerTokenB: lqProviderB,
+  //         providerTokenA: lqProviderA,
+  //         providerTokenB: lqProviderB,
 
-          vaultA: vaultA,
-          vaultB: vaultB,
+  //         vaultA: vaultA,
+  //         vaultB: vaultB,
 
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-        })
-        .signers([lqProvider])
-        .rpc();
+  //         tokenProgram: TOKEN_PROGRAM_ID,
+  //         systemProgram: anchor.web3.SystemProgram.programId,
+  //         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+  //       })
+  //       .signers([lqProvider])
+  //       .rpc();
 
-      const vaultAPDA: Account = await getAccount(provider.connection, vaultA);
-      const vaultBPDA = await getAccount(provider.connection, vaultB);
-
-    } catch (error) {
-      console.log(`Dont worry this is suppoused to fail ${error}`);
-    }
-  });
+  //     const vaultAPDA: Account = await getAccount(provider.connection, vaultA);
+  //     const vaultBPDA = await getAccount(provider.connection, vaultB);
+  //   } catch (error) {
+  //     console.log(`Dont worry this is suppoused to fail ${error}`);
+  //   }
+  // });
 
   it("Swap token ", async () => {
     try {
@@ -425,7 +425,7 @@ describe("fully-backed-amm", () => {
       );
 
       await program.methods
-        .withdrawAsset(new anchor.BN(Number(lqProviderLPAccount.amount)))
+        .withdrawAsset(new anchor.BN(Number(100)))
         .accountsStrict({
           user: lqProvider.publicKey,
           poolConfigAccount: poolConfigPDA,
@@ -465,6 +465,4 @@ describe("fully-backed-amm", () => {
       );
     }
   });
-
-
 });

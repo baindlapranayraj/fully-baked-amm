@@ -13,7 +13,6 @@ macro_rules! check_zero {
 #[macro_export]
 macro_rules! check_asset {
     ($amount_a:expr, $amount_b:expr, $total_amount_a:expr, $total_amount_b:expr) => {
-        // total_vault_a, total_vault_b, deposite_a, deposite_b
         require!(
             $total_amount_a / $total_amount_b
                 == ($total_amount_a + $amount_a) / ($total_amount_b + $amount_b),
@@ -22,8 +21,6 @@ macro_rules! check_asset {
     };
 }
 
-
-// ------ for withdraw asset ------
 #[macro_export]
 macro_rules! withdraw_token {
     // dx = X(S/T)
@@ -36,7 +33,6 @@ macro_rules! withdraw_token {
     };
 }
 
-// ------- Structs -------
 pub struct LiquidityPool {
     pub total_amount_a: u64,
     pub total_amount_b: u64,
@@ -47,11 +43,10 @@ pub struct LiquidityPool {
 
 pub struct SwapToken {
     pub is_a: bool,
-    pub deposit_amount:u64,
+    pub deposit_amount: u64,
     pub total_amount_a: u64,
     pub total_amount_b: u64,
 }
-
 
 impl LiquidityPool {
     pub fn calculate_liquidity(lp_request: LiquidityPool) -> Result<u64> {
@@ -72,23 +67,25 @@ impl LiquidityPool {
                 lp_request.total_amount_b
             );
             let lp_amount = LiquidityPool::calculate_lp_token(lp_request)?;
+            
             Ok(lp_amount)
         }
     }
 
     fn calculate_first_liquidity(amount_x: u64, amount_y: u64) -> Result<u64> {
-        // K = sqr(XY);
+        // K = sqrt(XY); this is given to the admin who created the pool
         // Let's say X = 1000 and Y = 1000, K = 1000 lp tokens
         check_zero!([amount_x, amount_y]);
         let liquidity = (amount_x
             .checked_mul(amount_y)
             .ok_or(AMMError::Overflow)? as f64)
             .sqrt();
+
         Ok(liquidity.round() as u64)
     }
 
     fn calculate_lp_token(lp_deposite: LiquidityPool) -> Result<u64> {
-        // s = (dx/X)*T
+        // s = min(dx/X,dy/Y)*T
         check_zero!([
             lp_deposite.total_amount_a,
             lp_deposite.deposit_amount_a,
@@ -104,14 +101,13 @@ impl LiquidityPool {
     }
 }
 
-// Caculating Swap amount hear
 impl SwapToken {
     pub fn swap_token(swap_arg: SwapToken) -> Result<u64> {
         match swap_arg.is_a {
             true => {
                 // dy = Ydx/(X + dx)
-              let swap_amount =  SwapToken::swap_b_for_a(swap_arg)?;
-             Ok(swap_amount)
+                let swap_amount = SwapToken::swap_b_for_a(swap_arg)?;
+                Ok(swap_amount)
             }
             false => {
                 // dx = Xdy/(Y + dy)
@@ -124,7 +120,6 @@ impl SwapToken {
     fn swap_b_for_a(swap_arg: SwapToken) -> Result<u64> {
         let total_b = I64F64::from_num(swap_arg.total_amount_b);
         let total_a = I64F64::from_num(swap_arg.total_amount_a);
-
         let deposit_a = I64F64::from_num(swap_arg.deposit_amount);
 
         // swap_amount = total_b * deposit_a / (total_a + deposit_a)
@@ -140,19 +135,16 @@ impl SwapToken {
         // dx = Xdy/(Y + dy)
         let total_amount_a = I64F64::from_num(swap_arg.total_amount_a);
         let total_amount_b = I64F64::from_num(swap_arg.total_amount_b);
-
-        let deposite_b = I64F64::from_num(swap_arg.deposit_amount);
+        let deposit_b = I64F64::from_num(swap_arg.deposit_amount);
 
         let numerator = total_amount_a
-            .checked_mul(deposite_b)
+            .checked_mul(deposit_b)
             .ok_or(AMMError::Overflow)?;
         let denominator = total_amount_b
-            .checked_add(deposite_b)
+            .checked_add(deposit_b)
             .ok_or(AMMError::Overflow)?;
 
-        let swap_amount = numerator/denominator;
-
-        // Placeholder for further calculation
+        let swap_amount = numerator / denominator;
         Ok(swap_amount.round().to_num::<u64>())
     }
 }
