@@ -315,7 +315,11 @@ describe("fully-backed-amm", () => {
         )} and in VaultB is  ${Number(vaultBPDA.amount)}💛💛💛💛`
       );
 
-      console.log(`🦄🦄🦄The total supply of Lp Tokens are ${Number(lpMintAccount.supply)} 🦄🦄🦄`)
+      console.log(
+        `🦄🦄🦄The total supply of Lp Tokens are ${Number(
+          lpMintAccount.supply
+        )} 🦄🦄🦄`
+      );
 
       let lpTokens =
         (amountA / Number(vaultAPDA.amount)) * Number(lpMintAccount.supply); // s = (dx/X)T: for cal lp shares
@@ -399,7 +403,7 @@ describe("fully-backed-amm", () => {
         .amount;
 
       console.log(`Amount after trx ${Number(amountAfter)}`);
-      console.log(`Requierd amount ${reqAmount}`);
+      console.log(`Requierd amount ${reqAmount.toFixed()}`);
       assert.equal(Number(reqAmount.toFixed()), Number(amountAfter));
     } catch (error) {
       console.log(`You got error while trying to swap a token ${error}`);

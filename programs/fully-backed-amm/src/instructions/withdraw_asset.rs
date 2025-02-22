@@ -3,7 +3,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{burn, transfer_checked, Burn, Mint, TokenAccount, TokenInterface, TransferChecked},
 };
-use crate::{constant::{MINT_LP, POOL}, state::PoolConfig, withdraw_token};
+use crate::{constant::{MINT_LP, POOL}, helper::WithdrawAsset, state::PoolConfig};
 
 #[derive(Accounts)]
 pub struct Withdraw<'info> {
@@ -71,8 +71,17 @@ pub struct Withdraw<'info> {
 
 impl<'info> Withdraw<'info> {
     pub fn withdraw(&mut self, lp_amount: u64) -> Result<()> {
-        let amount_a = withdraw_token!(self, true, lp_amount);
-        let amount_b = withdraw_token!(self, false, lp_amount);
+        let amount_a = WithdrawAsset::calculate_token(WithdrawAsset {
+            mint_supply: self.mint_lp.supply,
+            lp_share_amount: lp_amount,
+            total_amount_vault: self.vault_a.amount,
+        })?;
+
+        let amount_b = WithdrawAsset::calculate_token(WithdrawAsset {
+            mint_supply: self.mint_lp.supply,
+            lp_share_amount: lp_amount,
+            total_amount_vault: self.vault_b.amount,
+        })?;
 
         self.transfer_token(true, amount_a)?;
         self.transfer_token(false, amount_b)?;

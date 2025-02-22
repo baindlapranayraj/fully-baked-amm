@@ -43,8 +43,8 @@ pub mod fully_backed_amm {
 // - There is no fees in swapping in this program
 
 
-//+++++++++ Todos +++++++++
-// - mantain accuracy of numbers while swaping use fixed crate read maddog github
-// - build in such way it shows the pale immitation of uniswap or raydiuim
+//+++++++++ Todos ++++++++++
+// - Implement slippage protection
+// - Implement Fees collection if possible it
 
 

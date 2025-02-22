@@ -21,17 +21,6 @@ macro_rules! check_asset {
     };
 }
 
-#[macro_export]
-macro_rules! withdraw_token {
-    // dx = X(S/T)
-    // dy = Y(S/T)
-    ($var:expr, $is_a:expr, $lp_amount:expr) => {
-        match $is_a {
-            true => (($var.vault_a.amount * ($lp_amount / $var.mint_lp.supply)) as u64),
-            false => (($var.vault_b.amount * ($lp_amount / $var.mint_lp.supply)) as u64),
-        }
-    };
-}
 
 pub struct LiquidityPool {
     pub total_amount_a: u64,
@@ -39,13 +28,6 @@ pub struct LiquidityPool {
     pub deposit_amount_a: u64,
     pub deposit_amount_b: u64,
     pub mint_supply: u64,
-}
-
-pub struct SwapToken {
-    pub is_a: bool,
-    pub deposit_amount: u64,
-    pub total_amount_a: u64,
-    pub total_amount_b: u64,
 }
 
 impl LiquidityPool {
@@ -67,7 +49,7 @@ impl LiquidityPool {
                 lp_request.total_amount_b
             );
             let lp_amount = LiquidityPool::calculate_lp_token(lp_request)?;
-            
+
             Ok(lp_amount)
         }
     }
@@ -101,6 +83,15 @@ impl LiquidityPool {
     }
 }
 
+
+pub struct SwapToken {
+    pub is_a: bool,
+    pub deposit_amount: u64,
+    pub total_amount_a: u64,
+    pub total_amount_b: u64,
+}
+
+
 impl SwapToken {
     pub fn swap_token(swap_arg: SwapToken) -> Result<u64> {
         match swap_arg.is_a {
@@ -128,7 +119,7 @@ impl SwapToken {
             .ok_or(AMMError::Overflow)?;
         let denominator = total_a + deposit_a;
         let swap_amount = numerator / denominator;
-        Ok(swap_amount.round().to_num::<u64>())
+        Ok(swap_amount.round().to_num::<u64>()) // sending rounding number, which might cause some percision loss
     }
 
     fn swap_a_for_b(swap_arg: SwapToken) -> Result<u64> {
@@ -145,6 +136,24 @@ impl SwapToken {
             .ok_or(AMMError::Overflow)?;
 
         let swap_amount = numerator / denominator;
-        Ok(swap_amount.round().to_num::<u64>())
+        Ok(swap_amount.round().to_num::<u64>()) // sending rounding number, which might cause some percision loss
+    }
+}
+
+
+pub struct WithdrawAsset {
+    pub mint_supply:u64,
+    pub lp_share_amount:u64,
+    pub total_amount_vault:u64,
+}
+
+impl WithdrawAsset {
+    // Calculate user's token A and B using lp_token_share
+    // dx = A(S/T)
+    pub fn calculate_token(withdraw_arg: WithdrawAsset) -> Result<u64> {
+        let lp_ratio = withdraw_arg.lp_share_amount as f64 /  withdraw_arg.mint_supply as f64;  // S/T
+        
+        let token_amount = (withdraw_arg.total_amount_vault as f64)*lp_ratio;  //  Eg:- A(S/T)
+        Ok(token_amount as u64)
     }
 }
