@@ -14,5 +14,6 @@ pub enum AMMError {
     #[msg("Overflow Occured")]
     Overflow,
 
-   
+    #[msg("Slippage Occured !!")]
+    SlippageLimitExceeded,
 }

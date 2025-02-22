@@ -24,8 +24,8 @@ pub mod fully_backed_amm {
         Ok(())
     }
 
-    pub fn swap(ctx: Context<Swap>,  is_a: bool, amount: u64) -> Result<()> {
-        ctx.accounts.swap(is_a,amount)?;
+    pub fn swap(ctx: Context<Swap>, is_a: bool, amount: u64, min_slippage: u64) -> Result<()> {
+        ctx.accounts.swap(is_a, amount, min_slippage)?;
         Ok(())
     }
 
@@ -42,9 +42,6 @@ pub mod fully_backed_amm {
 // - Withdraw assets from the AMM Pool.
 // - There is no fees in swapping in this program
 
-
 //+++++++++ Todos ++++++++++
 // - Implement slippage protection
 // - Implement Fees collection if possible it
-
-

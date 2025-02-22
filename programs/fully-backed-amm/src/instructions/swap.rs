@@ -1,10 +1,11 @@
+use crate::error::AMMError;
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked},
 };
 
-use crate::{constant::POOL, helper::SwapToken, state::PoolConfig};
+use crate::{constant::POOL, helper::SwapToken, state::PoolConfig, swap_slippage_check};
 
 #[derive(Accounts)]
 pub struct Swap<'info> {
@@ -57,13 +58,15 @@ pub struct Swap<'info> {
 }
 
 impl<'info> Swap<'info> {
-    pub fn swap(&mut self, is_a: bool, amount: u64) -> Result<()> {
+    pub fn swap(&mut self, is_a: bool, amount: u64, min_slippage: u64) -> Result<()> {
         let send_amount = SwapToken::swap_token(SwapToken {
             is_a,
             deposit_amount: amount,
             total_amount_a: self.vault_a.amount,
             total_amount_b: self.vault_b.amount,
         })?;
+
+        swap_slippage_check!(min_slippage, send_amount);
 
         self.deposit_tokens(is_a, amount)?;
         self.transfer_user(is_a, send_amount)?;
