@@ -41,7 +41,3 @@ pub mod fully_backed_amm {
 // - Swap tokens
 // - Withdraw assets from the AMM Pool.
 // - There is no fees in swapping in this program
-
-//+++++++++ Todos ++++++++++
-// - Implement slippage protection
-// - Implement Fees collection if possible it

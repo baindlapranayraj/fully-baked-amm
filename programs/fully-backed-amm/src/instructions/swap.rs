@@ -65,6 +65,7 @@ impl<'info> Swap<'info> {
             total_amount_a: self.vault_a.amount,
             total_amount_b: self.vault_b.amount,
         })?;
+        
 
         swap_slippage_check!(min_slippage, send_amount);
 
