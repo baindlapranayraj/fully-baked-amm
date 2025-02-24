@@ -54,6 +54,7 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 
 <div>
  <img src="Images/architecture.png" alt="Maths">
+ <p> Hear Admin can create multiple Pools and user can swap or deposite there Tokens </p>
 </div>
 
 ---
