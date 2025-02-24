@@ -59,6 +59,15 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 
 ---
 
+## Constant Product Curve
+
+<div>
+ <img src="Images/pool.png" alt="Maths">
+</div>
+
+
+---
+
 ## Contributing
 
 We welcome contributions!
