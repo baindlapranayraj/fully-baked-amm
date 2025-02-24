@@ -6,15 +6,6 @@ An AMM is a type of decentralized exchange (DEX) used in cryptocurrency trading.
 
 ---
 
-## Table of Contents
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. [Contributing](#contributing)
-4. [License](#license)
-5. [Acknowledgements](#acknowledgements)
-
----
-
 ## Installation
 
 ### Steps to Install
