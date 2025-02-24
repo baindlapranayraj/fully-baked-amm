@@ -68,6 +68,42 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 
 ---
 
+## Swapping Token
+
+<div>
+ <img src="Images/swap-tokens.png" alt="Maths">
+</div>
+
+
+---
+
+## Adding Liquidity to the Pool
+
+<div>
+ <img src="Images/pool.png" alt="Maths">
+</div>
+
+
+---
+
+## Minting Tokens After Adding Liquidity
+
+<div>
+ <img src="Images/lp-mint-tokens.png" alt="Maths">
+</div>
+
+
+---
+
+## Removing/Withdrawing Asset from Liquidity
+
+<div>
+ <img src="Images/remove-liq.png" alt="Maths">
+</div>
+
+
+---
+
 ## Contributing
 
 We welcome contributions!
