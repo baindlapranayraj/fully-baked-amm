@@ -80,7 +80,7 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 ## Adding Liquidity to the Pool
 
 <div>
- <img src="Images/pool.png" alt="Maths">
+ <img src="Images/add-liq.png" alt="Maths">
 </div>
 
 
