@@ -95,6 +95,13 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 
 ---
 
+## Program Status
+
+   - Smart Contract Building ✅(Done)
+   - Testing Smart Contract ✅(Done)
+   - Frontend Integration 🏗️(Working on it)
+
+
 ## Contributing
 
 We welcome contributions!
