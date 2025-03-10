@@ -11,10 +11,15 @@ An AMM is a type of decentralized exchange (DEX) used in cryptocurrency trading.
 ## Features:
 
 **Constant Product AMM:** Supports trading of two tokens with a constant product formula.
+
 **Multiple Pools:** Admin can create multiple pools for users to swap or deposit their tokens.
+
 **Token Swapping:** Users can swap tokens within the AMM.
+
 **Adding Liquidity:** Users can add liquidity to pools, which is crucial for maintaining the AMM's functionality.
+
 **Minting Liquidity Pool Tokens:** After adding liquidity, users receive LP tokens.
+
 **Removing Liquidity:** Users can remove or withdraw assets from liquidity pools.
 
 ---
