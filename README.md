@@ -4,38 +4,19 @@
 This is a fully backed Automated Market Maker (AMM) built using the Anchor framework on Solana.
 An AMM is a type of decentralized exchange (DEX) used in cryptocurrency trading. Instead of using a traditional order book (where buyers and sellers are matched), AMMs use algorithms to automatically set prices based on the supply and demand of assets in a liquidity pool.
 
+
+
 ---
 
-## Installation
+## Features:
 
-### Steps to Install
+**Constant Product AMM:** Supports trading of two tokens with a constant product formula.
+**Multiple Pools:** Admin can create multiple pools for users to swap or deposit their tokens.
+**Token Swapping:** Users can swap tokens within the AMM.
+**Adding Liquidity:** Users can add liquidity to pools, which is crucial for maintaining the AMM's functionality.
+**Minting Liquidity Pool Tokens:** After adding liquidity, users receive LP tokens.
+**Removing Liquidity:** Users can remove or withdraw assets from liquidity pools.
 
-1. **Clone the repository:**
-   ```sh
-   git clone <your-repo-url>
-   cd <your-repo-name>
-   ```
-
-2. **Install dependencies:**
-   ```sh
-   yarn install
-   ```
-
-
-3. **Build the Anchor program:**
-   ```sh
-   anchor build
-   ```
-
-4. **Deploy the program locally:**
-   ```sh
-   anchor deploy
-   ```
-
-5. **Run tests:**
-   ```sh
-   anchor test
-   ```
 ---
 
 ## Constant Product AMM
@@ -93,6 +74,7 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
 </div>
 
 
+
 ---
 
 ## Program Status
@@ -101,6 +83,7 @@ Constant product AMM (automated market maker) is a decentralized exchange where 
    - Testing Smart Contract ✅(Done)
    - Frontend Integration 🏗️(Working on it)
 
+---
 
 ## Contributing
 
