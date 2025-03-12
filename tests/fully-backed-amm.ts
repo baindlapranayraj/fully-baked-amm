@@ -379,7 +379,7 @@ describe("fully-backed-amm", () => {
       console.log(`Amount before trx ${amountBefore}`);
 
       await program.methods
-        .swap(true, new anchor.BN(10))
+        .swap(true, new anchor.BN(10), new anchor.BN(5))
         .accountsStrict({
           user: user.publicKey,
           userTokenA: userTokenA,
