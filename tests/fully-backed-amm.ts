@@ -111,16 +111,19 @@ describe("fully-backed-amm", () => {
 
   const program = anchor.workspace.FullyBackedAmm as Program<FullyBackedAmm>;
 
+  // Keypairs
   let admin: anchor.web3.Keypair;
   let lqProvider: anchor.web3.Keypair;
   let user: anchor.web3.Keypair;
 
   let secretSeed = new BN(randomBytes(8));
 
+  // Mint Accounts
   let mintA: anchor.web3.PublicKey; // bonk
   let mintB: anchor.web3.PublicKey; // popcat
   let mintLP: anchor.web3.PublicKey;
 
+  // Token Accounts
   let lqProviderA: anchor.web3.PublicKey;
   let lqProviderB: anchor.web3.PublicKey;
   let lqProviderLP: anchor.web3.PublicKey;
@@ -333,38 +336,38 @@ describe("fully-backed-amm", () => {
     }
   });
 
-  // it("Is adding liquidity should fail (2nd instruction)", async () => {
-  //   try {
-  //     let tx = await program.methods
-  //       .depositeAsset(new anchor.BN(10), new anchor.BN(100))
-  //       .accountsPartial({
-  //         liquidProvider: lqProvider.publicKey,
+  it("Is adding liquidity should fail (2nd instruction)", async () => {
+    try {
+      let tx = await program.methods
+        .depositeAsset(new anchor.BN(10), new anchor.BN(100))
+        .accountsPartial({
+          liquidProvider: lqProvider.publicKey,
 
-  //         poolConfigAccount: poolConfigPDA,
+          poolConfigAccount: poolConfigPDA,
 
-  //         mintA: mintA,
-  //         mintB: mintB,
-  //         mintLp: mintLP,
+          mintA: mintA,
+          mintB: mintB,
+          mintLp: mintLP,
 
-  //         providerTokenA: lqProviderA,
-  //         providerTokenB: lqProviderB,
+          providerTokenA: lqProviderA,
+          providerTokenB: lqProviderB,
 
-  //         vaultA: vaultA,
-  //         vaultB: vaultB,
+          vaultA: vaultA,
+          vaultB: vaultB,
 
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //         systemProgram: anchor.web3.SystemProgram.programId,
-  //         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-  //       })
-  //       .signers([lqProvider])
-  //       .rpc();
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        })
+        .signers([lqProvider])
+        .rpc();
 
-  //     const vaultAPDA: Account = await getAccount(provider.connection, vaultA);
-  //     const vaultBPDA = await getAccount(provider.connection, vaultB);
-  //   } catch (error) {
-  //     console.log(`Dont worry this is suppoused to fail ${error}`);
-  //   }
-  // });
+      const vaultAPDA: Account = await getAccount(provider.connection, vaultA);
+      const vaultBPDA = await getAccount(provider.connection, vaultB);
+    } catch (error) {
+      console.log(`Dont worry this is suppoused to fail ${error}`);
+    }
+  });
 
   it("Swap token ", async () => {
     try {

@@ -1,110 +1,62 @@
-# AMM(Automated Market Maker)
+# Automated Market Maker (AMM)
 
 ## Overview
-This is a fully backed Automated Market Maker (AMM) built using the Anchor framework on Solana.
-An AMM is a type of decentralized exchange (DEX) used in cryptocurrency trading. Instead of using a traditional order book (where buyers and sellers are matched), AMMs use algorithms to automatically set prices based on the supply and demand of assets in a liquidity pool.
+The Automated Market Maker (AMM) is a fully backed, decentralized exchange protocol built using the Anchor framework on the Solana blockchain. Unlike traditional order book trading systems, this AMM leverages algorithmic models to dynamically set prices based on asset supply and demand within liquidity pools.
 
+## Key Features
+- **Constant Product AMM:** Enables efficient two-token trading by leveraging a constant product formula.  
+- **Multiple Liquidity Pools:** Administrators can create and manage various pools, enhancing trading flexibility.  
+- **Token Swapping:** Provides seamless token exchange capabilities.  
+- **Liquidity Provision:** Allows users to effortlessly add liquidity to pools to support the network’s trading operations.  
+- **LP Token Minting:** Automatically issues Liquidity Pool tokens to users upon the addition of liquidity.  
+- **Liquidity Withdrawal:** Facilitates secure and straightforward asset removal from pools.
 
+## Operational Model
+Our AMM employs the constant product formula, a proven approach that maintains market equilibrium and allows for reliable, predictable trading rates despite liquidity fluctuations.
 
----
-
-## Features:
-
-**Constant Product AMM:** Supports trading of two tokens with a constant product formula.
-
-**Multiple Pools:** Admin can create multiple pools for users to swap or deposit their tokens.
-
-**Token Swapping:** Users can swap tokens within the AMM.
-
-**Adding Liquidity:** Users can add liquidity to pools, which is crucial for maintaining the AMM's functionality.
-
-**Minting Liquidity Pool Tokens:** After adding liquidity, users receive LP tokens.
-
-**Removing Liquidity:** Users can remove or withdraw assets from liquidity pools.
-
----
-
-## Constant Product AMM
-Constant product AMM (automated market maker) is a decentralized exchange where 2 tokens are traded.
-
-## Overview of AMM program
-
-<div>
- <img src="Images/architecture.png" alt="Maths">
- <p> Hear Admin can create multiple Pools and user can swap or deposite there Tokens </p>
+## Program Architecture
+<div align="center">
+  <img src="Images/architecture.png" alt="Architecture Diagram" width="600">
+  <p>Overview of the system where administrators create multiple pools and users engage in token swaps or liquidity deposits.</p>
 </div>
 
----
+## Detailed Visuals
+- **Constant Product Curve:**  
+  <div align="center">
+    <img src="Images/pool.png" alt="Constant Product Curve" width="600">
+  </div>
+- **Token Swapping:**  
+  <div align="center">
+    <img src="Images/swap-tokens.png" alt="Token Swapping" width="600">
+  </div>
+- **Adding Liquidity:**  
+  <div align="center">
+    <img src="Images/add-liq.png" alt="Adding Liquidity" width="600">
+  </div>
+- **LP Token Minting:**  
+  <div align="center">
+    <img src="Images/lp-mint-tokens.png" alt="Minting LP Tokens" width="600">
+  </div>
+- **Liquidity Withdrawal:**  
+  <div align="center">
+    <img src="Images/remove-liq.png" alt="Removing Liquidity" width="600">
+  </div>
 
-## Constant Product Curve
-
-<div>
- <img src="Images/pool.png" alt="Maths">
-</div>
-
-
----
-
-## Swapping Token
-
-<div>
- <img src="Images/swap-tokens.png" alt="Maths">
-</div>
-
-
----
-
-## Adding Liquidity to the Pool
-
-<div>
- <img src="Images/add-liq.png" alt="Maths">
-</div>
-
-
----
-
-## Minting Tokens After Adding Liquidity
-
-<div>
- <img src="Images/lp-mint-tokens.png" alt="Maths">
-</div>
-
-
----
-
-## Removing/Withdrawing Asset from Liquidity
-
-<div>
- <img src="Images/remove-liq.png" alt="Maths">
-</div>
-
-
-
----
-
-## Program Status
-
-   - Smart Contract Building ✅(Done)
-   - Testing Smart Contract ✅(Done)
-   - Frontend Integration 🏗️(Working on it)
-
----
+## Development Status
+- **Smart Contract Development:** Completed  
+- **Testing:** Completed  
+- **Frontend Integration:** In Progress
 
 ## Contributing
-
-We welcome contributions!
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!:
-
+We welcome contributions to improve this project. To contribute:
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature-name`).
-3. Make your changes and commit them (`git commit -am 'Add new feature'`).
-4. Push your branch (`git push origin feature/your-feature-name`).
-5. Open a Pull Request to the main repository.
+2. Create a new branch (e.g., `feature/your-feature-name`).
+3. Make your changes and commit them with a clear, descriptive message.
+4. Push your branch to your fork.
+5. Open a Pull Request to propose your changes.
 
----
-
-## References I have taken:-
-
+## References
+- [AMM Blog Post](https://www.infect3d.xyz/blog/Exploring-AMMs) — A comprehensive guide by [@InfectedCrypto](https://x.com/InfectedCrypto) that explains AMM principles effortlessly.
+- [Constant Product Equation](https://youtu.be/QNPyFs8Wybk?si=TlaNLr0reoL3_S5S) — A detailed video by [@ProgrammerSmart](https://x.com/ProgrammerSmart) covering the mathematical foundations behind the AMM.
 - [AMM Blog Post](https://www.infect3d.xyz/blog/Exploring-AMMs) - This Blog post is really amazing easy to digest/understand the AMM in Technical POV,Written by [@InfectedCrypto](https://x.com/InfectedCrypto).
 - [Constant Product Equation](https://youtu.be/QNPyFs8Wybk?si=TlaNLr0reoL3_S5S) - This video by [@ProgrammerSmart](https://x.com/ProgrammerSmart), he explained Mathmatical part for building AMM using constant product equation.
