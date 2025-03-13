@@ -67,4 +67,3 @@ We welcome contributions to improve this project. To contribute:
 
 - [AMM Blog Post](https://www.infect3d.xyz/blog/Exploring-AMMs) — A comprehensive guide by [@InfectedCrypto](https://x.com/InfectedCrypto) that explains AMM principles effortlessly.
 - [Constant Product Equation](https://youtu.be/QNPyFs8Wybk?si=TlaNLr0reoL3_S5S) — A detailed video by [@ProgrammerSmart](https://x.com/ProgrammerSmart) covering the mathematical foundations behind the AMM.
-- [AMM Blog Post](https://www.infect3d.xyz/blog/Exploring-AMMs) - This Blog post is really amazing easy to digest/understand the AMM in Technical POV,Written by [@InfectedCrypto](https://x.com/InfectedCrypto).
